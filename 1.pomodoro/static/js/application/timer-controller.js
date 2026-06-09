@@ -133,14 +133,6 @@ export class TimerController {
         this.endAt = null;
         this.pausedAt = null;
       }
-    } else if (nextState === STATES.RUNNING_FOCUS && this.state === STATES.PAUSED_FOCUS) {
-      // 再開時：pausedAt から endAt を延長する
-      const now = this.clock.now();
-      const pausedDuration = now - this.pausedAt;
-      this.endAt += pausedDuration;
-      this.pausedAt = null;
-      this.startInterval();
-    }
 
     // リスナーに通知
     this.notifyListeners();
