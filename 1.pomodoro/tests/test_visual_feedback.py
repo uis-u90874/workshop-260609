@@ -5,8 +5,9 @@ import unittest
 
 APP_PATH = Path(__file__).resolve().parents[1] / "app.py"
 spec = importlib.util.spec_from_file_location("pomodoro_app", APP_PATH)
+if spec is None or spec.loader is None:
+    raise ImportError("Failed to load app.py for tests")
 app = importlib.util.module_from_spec(spec)
-assert spec and spec.loader
 spec.loader.exec_module(app)
 
 

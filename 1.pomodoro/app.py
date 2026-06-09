@@ -326,7 +326,7 @@ class PomodoroRequestHandler(BaseHTTPRequestHandler):
 
     def log_message(self, fmt: str, *args: object) -> None:  # noqa: A003
         """Silence default request logs to keep timer output clean."""
-        return
+        pass
 
 
 def run_server(host: str = "127.0.0.1", port: int = 8000) -> None:
