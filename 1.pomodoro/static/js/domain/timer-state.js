@@ -122,14 +122,6 @@ export function getPrimaryAction(state) {
   return actions[state] || ACTIONS.START;
 }
 
-/**
- * タイマーが実行中か判定
- * @param {string} state - 状態
- * @returns {boolean}
- */
-export function isRunning(state) {
-  return state === STATES.RUNNING_FOCUS;
-}
 
 /**
  * タイマーが操作可能な状態か判定
