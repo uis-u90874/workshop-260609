@@ -96,13 +96,20 @@ export class TimerController {
     // 状態が変わった場合、制御を実行
     if (nextState !== this.state) {
       const now = this.clock.now();
+      const prevState = this.state;
       this.state = nextState;
 
       // 状態に応じた時刻計算を実行
       if (isRunning(nextState)) {
-        // running 状態：startedAt と endAt を設定
-        this.startedAt = now;
-        this.endAt = now + this.focusDurationSeconds * 1000;
+        // 再開時は pausedAt 分だけ endAt を延長し、開始時刻は維持する
+        if (prevState === STATES.PAUSED_FOCUS && this.pausedAt !== null && this.endAt !== null) {
+          const pausedDuration = now - this.pausedAt;
+          this.endAt += pausedDuration;
+        } else {
+          // running 状態：startedAt と endAt を設定
+          this.startedAt = now;
+          this.endAt = now + this.focusDurationSeconds * 1000;
+        }
         this.pausedAt = null;
         this.startInterval();
       } else if (nextState === STATES.PAUSED_FOCUS) {
