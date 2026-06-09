@@ -15,7 +15,11 @@ _RED = (239, 68, 68)
 
 def _mix(start: tuple[int, int, int], end: tuple[int, int, int], ratio: float) -> tuple[int, int, int]:
     ratio = max(0.0, min(1.0, ratio))
-    return tuple(int(s + (e - s) * ratio) for s, e in zip(start, end))
+    return (
+        int(start[0] + (end[0] - start[0]) * ratio),
+        int(start[1] + (end[1] - start[1]) * ratio),
+        int(start[2] + (end[2] - start[2]) * ratio),
+    )
 
 
 def interpolate_color(progress: float) -> str:
@@ -251,7 +255,9 @@ def render_html(focus_seconds: int = FOCUS_SECONDS_DEFAULT, break_seconds: int =
     // Background animation: particles + ripple when focused.
     const canvas = document.getElementById('bg');
     const ctx = canvas.getContext('2d');
-    const particles = Array.from({{ length: 60 }}, () => ({{ x: 0, y: 0, vx: 0, vy: 0, r: 0 }}));
+    const PARTICLE_COUNT = 60;
+    const RIPPLE_SPAWN_PROBABILITY = 0.03;
+    const particles = Array.from({{ length: PARTICLE_COUNT }}, () => ({{ x: 0, y: 0, vx: 0, vy: 0, r: 0 }}));
     let ripples = [];
 
     function resize() {{
@@ -280,7 +286,7 @@ def render_html(focus_seconds: int = FOCUS_SECONDS_DEFAULT, break_seconds: int =
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.fill();
         }});
-        if (Math.random() < 0.03) {{
+        if (Math.random() < RIPPLE_SPAWN_PROBABILITY) {{
           ripples.push({{ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: 10, alpha: 0.35 }});
         }}
       }}
@@ -319,6 +325,7 @@ class PomodoroRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(html)
 
     def log_message(self, fmt: str, *args: object) -> None:  # noqa: A003
+        """Silence default request logs to keep timer output clean."""
         return
 
 
